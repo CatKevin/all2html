@@ -5,6 +5,7 @@ const HtmlWebpackInlineSourcePlugin = require('html-webpack-inline-source-plugin
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 // const CssMinimizerPlugin = require('css-minimizer-webpack-plugin')
 const HTMLInlineCSSWebpackPlugin = require('html-inline-css-webpack-plugin').default
+// const urlLoader = require('url-loader')
 
 module.exports = {
   mode: 'production',
@@ -13,8 +14,10 @@ module.exports = {
     './src/style/style.css'
   ],
   output: {
-    filename: 'bundle.js',
-    path: path.resolve(__dirname, 'dist')
+    // filename: 'bundle.js',
+    // path: path.resolve(__dirname, 'dist')
+    path: path.join(__dirname, 'dist'),
+    filename: '[name]_[chunkhash:8].js'
   },
   plugins: [
     new CleanWebpackPlugin(),
@@ -31,13 +34,25 @@ module.exports = {
   ],
   module: {
     rules: [
+      // {
+      //   test: /\.(png|svg|jpg|jpeg|gif|mp3)$/i,
+      //   loader: 'file-loader',
+      //   options: {
+      //     name: '[path][hash:18].[ext]',
+      //     esModule: false
+      //   }
+      // },
       {
-        test: /\.(png|svg|jpg|jpeg|gif|mp3)$/i,
-        loader: 'file-loader',
-        options: {
-          name: '[path][hash:18].[ext]',
-          esModule: false
-        }
+        test: /.(png|svg|jpg|jpeg|gif|mp3)$/,
+        use: [
+            {
+                loader: 'url-loader',
+                options: {
+                    name: '[name]_[hash:8].[ext]',
+                    limit: 102400000000
+                }
+            }
+        ]
       },
       {
         test: /\.css$/,
@@ -45,9 +60,9 @@ module.exports = {
       }
     ]
   },
-  resolve: {
-    alias: {
-      Assets: path.resolve(__dirname, 'assets/')
-    }
-  }
+  // resolve: {
+  //   alias: {
+  //     Assets: path.resolve(__dirname, 'assets/')
+  //   }
+  // }
 }
