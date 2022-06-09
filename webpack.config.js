@@ -3,9 +3,12 @@ const { CleanWebpackPlugin } = require('clean-webpack-plugin')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const HtmlWebpackInlineSourcePlugin = require('html-webpack-inline-source-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
+const OptimizeCSSAssetsPlugin = require("optimize-css-assets-webpack-plugin");
 // const CssMinimizerPlugin = require('css-minimizer-webpack-plugin')
 const HTMLInlineCSSWebpackPlugin = require('html-inline-css-webpack-plugin').default
 // const urlLoader = require('url-loader')
+const TerserWebpackPlugin = require("terser-webpack-plugin")
+
 
 module.exports = {
   mode: 'production',
@@ -19,6 +22,12 @@ module.exports = {
     path: path.join(__dirname, 'dist'),
     filename: '[name]_[chunkhash:8].js'
   },
+  optimization: {
+    minimize: true,
+    minimizer: [
+      new TerserWebpackPlugin(),
+    ]
+  },
   plugins: [
     new CleanWebpackPlugin(),
     new MiniCssExtractPlugin({
@@ -29,6 +38,7 @@ module.exports = {
       template: './src/index.html',
       inlineSource : '.(js|css)$' //全部内嵌
     }),
+    new OptimizeCSSAssetsPlugin({}),
     new HTMLInlineCSSWebpackPlugin(),
     new HtmlWebpackInlineSourcePlugin(),
   ],
